@@ -1,6 +1,7 @@
 /*
     Define the shapes
 */
+/******************* SHAPES *******************/
 function Shape(position) {
     this.position = position;
     this.fill = drawio.fillElement;
@@ -10,18 +11,15 @@ function Shape(position) {
 
 Shape.prototype.render = function () {};
 
-// Shape.prototype.move = function (position) {
-//     this.position.x = position.x;
-//     this.position.y = position.y;
+// Shape.prototype.move = function (shape, offset) {
+//     console.log('move')
+//     shape.position.x = offset.x;
+//     shape.position.y = offset.y;
 // }
-Shape.prototype.move = function (position) {
-    this.position.x = position.x;
-    this.position.y = position.y;
-}
 
 Shape.prototype.resize = function () {};
 
-
+/******************* RECTANGLE *******************/
 function Rectangle(position, width, height) {
     Shape.call(this, position);
     this.width = width;
@@ -33,8 +31,6 @@ Rectangle.prototype = Object.create(Shape.prototype);
 Rectangle.prototype.constructor = Rectangle;
 
 Rectangle.prototype.render = function () {
-    // Útfæra render a rectangle
-    // drawio.ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
     drawio.ctx.strokeStyle = this.color;
     drawio.ctx.fillStyle = this.color;
     drawio.ctx.lineWidth = this.lineWidth;
@@ -53,10 +49,11 @@ Rectangle.prototype.resize = function (x, y) {
     this.height = y - this.position.y;
 };
 
-Rectangle.prototype.move = function(position) {
-    this.__proto__.proto__.move.call(this, position);
-};
+// Rectangle.prototype.move = function(position) {
+//     this.__proto__.proto__.move.call(this, position);
+// };
 
+/******************* CIRCLE *******************/
 function Circle(position, width, height, radius) {
     Shape.call(this, position);
     this.width = width;
@@ -64,6 +61,7 @@ function Circle(position, width, height, radius) {
     this.radius = radius;
 };
 
+// Assign the prototype
 Circle.prototype = Object.create(Shape.prototype);
 Circle.prototype.constructor = Circle;
 
@@ -88,12 +86,14 @@ Circle.prototype.resize = function (radius) {
     }
 };
 
+/******************* LINE *******************/
 function Line(position, width, height) {
     Shape.call(this, position);
     this.width = width;
     this.height = height;
 };
 
+// Assign the prototype
 Line.prototype = Object.create(Shape.prototype);
 Line.prototype.constructor = Line;
 
@@ -107,18 +107,18 @@ Line.prototype.render = function () {
     drawio.ctx.closePath();
 };
 
-// Skoða hvort þarf að útfæra checkBound.
-
 Line.prototype.resize = function (x, y) {
     this.width = x - this.position.x;
     this.height = y - this.position.y;
 };
 
+/******************* PENCIL *******************/
 function Pencil(position) {
     Shape.call(this, position);
     this.points = [];
 }
 
+// Assign the prototype
 Pencil.prototype = Object.create(Shape.prototype);
 Pencil.prototype.constructor = Pencil;
 
@@ -138,6 +138,7 @@ Pencil.prototype.resize = function (x, y) {
     this.points.push({ x: x, y: y});
 };
 
+/******************* TEXT *******************/
 function Text(position) {
     Shape.call(this, position);
     this.fontSize = drawio.fontSize;
@@ -146,6 +147,7 @@ function Text(position) {
     this.color = drawio.startColor;
 }
 
+// Assign the prototype
 Text.prototype = Object.create(Shape.prototype);
 Text.prototype.constructor = Text;
 

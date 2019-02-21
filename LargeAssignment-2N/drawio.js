@@ -1,3 +1,4 @@
+/******************* DRAWIO *******************/
 /*
     Structure for the assignment 2 project
 */
@@ -26,7 +27,6 @@ window.drawio = {
 
 $(function (){
     // Document is loaded and parsed
-
     function drawCanvas() {
         drawio.ctx.clearRect(0, 0, drawio.canvas.width, drawio.canvas.height);
         if (drawio.selectedElement) {
@@ -50,12 +50,14 @@ $(function (){
         }
     });
 
+/******************* CLEAR ALL *******************/
     $('#clearAll').on('click', function () {
         drawio.shapes = [];
         drawio.unreShapes = [];
         drawCanvas();
     });
 
+/******************* UNDO *******************/
     $('#undo').on('click', function () {
         if (drawio.shapes.length) {
             var poppedElement = drawio.shapes.pop();
@@ -65,6 +67,7 @@ $(function (){
         }
     });
 
+    /******************* REDO *******************/
     $('#redo').on('click', function () {
         if (drawio.unreShapes.length) {
             let poppedElement = drawio.unreShapes.pop();
@@ -74,25 +77,30 @@ $(function (){
         }
     });
     
+    /******************* FONTS *******************/
     // listen when fonts from dropdownList get changes
     $('#fontSelect').on('change', function () {
         drawio.Font = $("#fontSelect option:selected").text();
     });
 
+    /******************* TEXT *******************/
     $('#textBox').on('input', function () {
         drawio.Text = $('#textBox').val();
     });
 
+    /******************* LINE WIDTH *******************/
     $('#line-size').on('change', function () {
         drawio.lineWidth = $('#line-size').val();
         $('#valueOfRange').text(drawio.lineWidth);
     });
 
+    /******************* SIZE OF TEXT *******************/
     $('#font-size').on('change', function () {
         drawio.fontSize = $('#font-size').val();
         $('#valueOfFontSize').text(drawio.fontSize);
     });
 
+    /******************* FILL SHAPES *******************/
     $('#fillShapes').change(function () {
         if ($(this).is(":checked")) {
             drawio.fillElement = true;
@@ -100,12 +108,34 @@ $(function (){
             drawio.fillElement = false;
         }
     });
-
+    /******************* COLORS *******************/
     $('#color-picker').change(function () {
         drawio.startColor = $('#color-picker').spectrum('get').toHexString();
     });
 
-    // mousedown
+    /******************* LIST OF SAVED FILES *******************/
+    function listOfFiles() {
+        for (var i = 0; i < localStorage.length; i++) {
+            var fileName = localStorage.key(i);
+            var listElement = $("<option class=\"list-of-files\"></option>").attr('data-name', fileName).html(fileName);
+            $('#all-files').append(listElement);
+        }
+    }
+    listOfFiles();
+
+    /******************* SAVE DRAWINGS *******************/
+    $('#save-btn').on('click', function () {
+        var fileNames = [];
+        for (var i = 0; i < localStorage.length; i++) {
+            fileNames.push(localStorage.key(i));
+        }
+        var str = JSON.stringify(drawio.shapes);
+        var data = window.prompt("Name your file:");
+        localStorage.setItem(data, str);
+        window.alert("Your drawing: " + data + " has been saved!");
+    });
+
+    /******************* MOUSE-DOWN *******************/
     $('#my-canvas').on('mousedown', function (mouseEvent) {
         switch (drawio.selectedShape) {
             case drawio.availableShapes.RECTANGLE:
@@ -128,28 +158,22 @@ $(function (){
         }
     });
 
-    // mousemove
+    /******************* MOUSE-MOVE *******************/
     $('#my-canvas').on('mousemove', function (mouseEvent) {
         if (drawio.selectedElement) {
             // drawio.ctx.clearRect(0, 0, drawio.canvas.width, drawio.canvas.height);
             drawio.selectedElement.resize(mouseEvent.offsetX, mouseEvent.offsetY);
         }
-        // if (drawio.selectedElement == drawio.availableShapes.MOVE)  {
-        //     drawio.selectedElement.move(mouseEvent.offsetX, mouseEvent.offsetY);
-        // } else {
-        //     if (drawio.selectedElement) {
-        //     drawio.selectedElement.resize(mouseEvent.offsetX, mouseEvent.offsetY);
-        //     }
-        // }
         drawCanvas();
     });
 
-    //mouseup
+    /******************* MOUSE-UP *******************/
     $('#my-canvas').on('mouseup', function () {
         drawio.shapes.push(drawio.selectedElement);
         drawio.selectedElement = null;
     });
 
+    /******************* COLOR-PICKER *******************/
     $("#color-picker").spectrum({
         color: "#000000",
         showInput: true,
